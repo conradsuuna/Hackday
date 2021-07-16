@@ -33,4 +33,12 @@ def business_plan():
         new_plan.save()
         return redirect('/home')
     else:
-        return render_template('bplan.html')
+        return render_template('create_bplan.html')
+
+
+@main.route("/my_plans")
+@login_required
+def show_business_plans():
+    bplans = Bplan.query.filter_by(user_id=current_user.id)
+    return render_template('bplans.html',bplans=bplans)
+    
