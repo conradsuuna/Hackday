@@ -4,7 +4,7 @@ from project import db, bcrypt
 from project.models import User, Bplan
 from project.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                                    RequestResetForm, ResetPasswordForm)
-from project.users.utils import  send_reset_email
+from project.users.utils import  send_reset_email ,save_picture
 
 users = Blueprint('users', __name__)
 
