@@ -72,7 +72,7 @@ def user_bplans(username):
     page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
     bplans = Bplan.query.filter_by(author=user)\
-        .order_by(Post.date_posted.desc())\
+        .order_by(Bplan.date_posted.desc())\
         .paginate(page=page, per_page=5)
     return render_template('user_bplans.html', bplans=bplans, user=user)
 
