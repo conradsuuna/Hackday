@@ -1,0 +1,52 @@
+{% extends "auth_index.html" %}
+{% block content %}
+<div class="auth-form-light text-left py-5 px-4 px-sm-5">
+    {% with messages = get_flashed_messages(category_filter=["error"]) %}
+        {% if messages %}
+            <div class=flashes>
+                <div class="alert alert-danger">{{ messages[0] }}</div>
+            </div>
+        {% endif %}
+    {% endwith %}
+    <div class="brand-logo">
+        <h3>HACKDAY</h3>
+    </div>
+    <h4>New here?</h4>
+    <h6 class="font-weight-light">Signing up is easy. It only takes a few steps</h6>
+    <form class="pt-3" action="/register" method="post">
+        <div class="form-group">
+            <input type="email" name="email" class="form-control form-control-lg" placeholder="Email" required>
+        </div>
+        <div class="form-group">
+            <input type="text" name="username" class="form-control form-control-lg" placeholder="Username" required>
+        </div>
+        <!-- <div class="form-group">
+            <select class="form-control form-control-lg" id="exampleFormControlSelect2">
+                <option>Country</option>
+                <option>United States of America</option>
+                <option>United Kingdom</option>
+                <option>India</option>
+                <option>Germany</option>
+                <option>Argentina</option>
+            </select>
+        </div> -->
+        <div class="form-group">
+            <input type="password" name='password' class="form-control form-control-lg" placeholder="Password" required>
+        </div>
+        <!-- <div class="mb-4">
+            <div class="form-check">
+                <label class="form-check-label text-muted">
+                    <input type="checkbox" class="form-check-input">
+                    I agree to all Terms & Conditions
+                </label>
+            </div>
+        </div> -->
+        <div class="mt-3">
+            <button type="submit" id="register-submit-btn" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">SIGN UP</button>
+        </div>
+        <div class="text-center mt-4 font-weight-light">
+            Already have an account? <a href="/login" class="text-primary">Login</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

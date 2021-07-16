@@ -5,39 +5,91 @@ from project.models import User, Bplan
 from project.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                                    RequestResetForm, ResetPasswordForm)
 from project.users.utils import  send_reset_email ,save_picture
+from werkzeug.urls import url_parse
 
 users = Blueprint('users', __name__)
 
+@users.route('/')
+def show_login_signup():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.home'))
+    return render_template('login.html')
+
+# @users.route("/register", methods=['GET', 'POST'])
+# def register():
+#     if current_user.is_authenticated:
+#         return redirect(url_for('main.home'))
+#     form = RegistrationForm()
+#     if form.validate_on_submit():
+#         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+#         user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+#         db.session.add(user)
+#         db.session.commit()
+#         flash('Your account has been created! You are now able to log in', 'success')
+#         return redirect(url_for('users.login'))
+#     return render_template('register.html', title='Register', form=form)
 
 @users.route("/register", methods=['GET', 'POST'])
 def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
-        db.session.add(user)
-        db.session.commit()
-        flash('Your account has been created! You are now able to log in', 'success')
-        return redirect(url_for('users.login'))
-    return render_template('register.html', title='Register', form=form)
+    if request.method == "POST":
+        if current_user.is_authenticated:
+            return redirect(url_for('main.home'))
+        data = request.form
+        existing_user = User.query.filter(User.email==data['email']).first()###
+        if existing_user:
+            flash('User with given email address already exists, please Login or Signup with different email', 'error')
+            return redirect(request.referrer) 
+        new_user = User(email = data['email'],
+                        username = data['username'],
+                        password = User.hash_password(data['password']),
+                    )
+        new_user.save()
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('main.home')
+        return redirect(next_page)
+    else:
+        return render_template('register.html')
+
+# @users.route("/login", methods=['GET', 'POST'])
+# def login():
+#     if current_user.is_authenticated:
+#         return redirect(url_for('main.home'))
+#     form = LoginForm()
+#     if form.validate_on_submit():
+#         user = User.query.filter_by(email=form.email.data).first()
+#         if user and bcrypt.check_password_hash(user.password, form.password.data):
+#             login_user(user, remember=form.remember.data)
+#             next_page = request.args.get('next')
+#             return redirect(next_page) if next_page else redirect(url_for('main.home'))
+#         else:
+#             flash('Login Unsuccessful. Please check email and password', 'danger')
+#     return render_template('login.html', title='Login', form=form)
 
 
-@users.route("/login", methods=['GET', 'POST'])
+@users.route('/login',methods=['GET', 'POST'])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
-            login_user(user, remember=form.remember.data)
-            next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('main.home'))
-        else:
-            flash('Login Unsuccessful. Please check email and password', 'danger')
-    return render_template('login.html', title='Login', form=form)
+    if request.method == "POST":
+        if current_user.is_authenticated:
+            return redirect(url_for('main.home'))
+        data = request.form
+        email = data['email']
+        password = data['password']
+        remember = True if request.form.get('remember_me') else False
+        user = User.query.filter(User.email==email).first()###
+        if not user:
+            flash("Account doesn't exist",'error')
+            return redirect(request.referrer)
+        if not user.is_password_valid(password):
+            flash('Login Unsuccessful. Please check email and password', 'error')
+            return redirect(request.referrer)
+        login_user(user, remember=remember)
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('main.home')
+        return redirect(next_page)
+    else:
+        return render_template('login.html')
 
 
 @users.route("/logout")
