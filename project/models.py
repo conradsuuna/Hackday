@@ -81,3 +81,51 @@ class Bplan(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
+
+# class Products(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     title = db.Column(db.String(1000), nullable=False)
+#     industry = db.Column(db.String(1000), nullable=False)
+#     funds_needed = db.Column(db.Integer, nullable=False)
+#     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+#     content = db.Column(db.Text, nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+#     def __repr__(self):
+#         return f"Business Plan('{self.title}', '{self.industry}')"
+
+#     def save(self):
+#         db.session.add(self)
+#         db.session.commit()
+
+#     def update(self):
+#         db.session.commit()
+
+#     def delete(self):
+#         db.session.delete(self)
+#         db.session.commit()
+
+
+# class Bplan(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     title = db.Column(db.String(1000), nullable=False)
+#     industry = db.Column(db.String(1000), nullable=False)
+#     funds_needed = db.Column(db.Integer, nullable=False)
+#     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+#     content = db.Column(db.Text, nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+#     def __repr__(self):
+#         return f"Business Plan('{self.title}', '{self.industry}')"
+
+#     def save(self):
+#         db.session.add(self)
+#         db.session.commit()
+
+#     def update(self):
+#         db.session.commit()
+
+#     def delete(self):
+#         db.session.delete(self)
+#         db.session.commit()
